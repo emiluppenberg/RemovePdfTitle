@@ -3,17 +3,18 @@
 if (args.Length == 0)
     throw new ArgumentException("Provide a PDF filepath");
 
-var directory = Directory.GetCurrentDirectory();
-var filePath = Path.GetFullPath($"{directory}/{args[0]}.pdf");
-var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+var bytes = File.ReadAllBytes(args[0]);
 
-if (fileStream is null)
+if (bytes is null)
     throw new ArgumentException("PDF filepath is invalid");
 
 var pdf = new PdfDocument();
 
-pdf.LoadFromStream(fileStream);
+pdf.LoadFromBytes(bytes);
 
 pdf.DocumentInformation.Title = "";
 
-pdf.SaveToFile($"{args[0]}");
+var directory = Path.GetDirectoryName(args[0]);
+var fileName = Path.GetFileName(args[0]);
+
+pdf.SaveToFile($"{directory}\\{fileName}");
